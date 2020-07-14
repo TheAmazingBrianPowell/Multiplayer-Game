@@ -69,7 +69,7 @@ document.body.addEventListener("mousemove", function(e) {
 //document.getElementById("play").addEventListener("click", function() {
 //this.style.display = "none";
 socket = io();
-socket = io.connect('https://game8.herokuapp.com');
+socket = io.connect(window.location.href);
 var id;
 var elements = [];
 
