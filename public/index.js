@@ -50,13 +50,14 @@ document.body.addEventListener('touchstart', function(e) {
 
 document.body.addEventListener('touchend', function(e) {
 	touch = false;
-}, false);
+});
 
 document.body.addEventListener('touchmove', function(e) {
 	touch = true;
 	touchX = e.touches[0].clientX;
 	touchY = e.touches[0].clientY;
-}, false);
+	e.preventDefault();
+});
 
 var socket;
 var x = 0,y = 0;
