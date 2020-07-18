@@ -107,7 +107,7 @@ function setup() {
 	//	cat.rotation = 0.5;
 	//Add the cat to the stage
 	//app.stage.addChild(cat);
-	app.ticker.add(gameLoop);
+	app.ticker.add(delta => gameLoop(delta));
 }
 let flagContainer = new PIXI.Container();
 flagContainer.zIndex = 0;
@@ -117,7 +117,6 @@ let bullets = [];
 
 socket.on("state", (data) => {
 	if(id) {
-		console.log(true);
 		for(var i in data.players) {
 			if(!players[i]) {
 				players[i] = new PIXI.Graphics();
@@ -172,7 +171,7 @@ socket.on('connect', () => {
 	}
 });
 
-function gameLoop() {
+function gameLoop(delta) {
 	if(players[id]) {
 		if(keysPressed['ArrowRight'] && keysPressed['ArrowDown']) socket.emit('move', [1,1]);
 		else if(keysPressed['ArrowRight'] && keysPressed['ArrowUp']) socket.emit('move',  [1,-1]);
@@ -195,6 +194,7 @@ function gameLoop() {
 		if(mouseIsPressed || touch) {
 			socket.emit("fired", [touchX, touchY]);
 		}
+		console.log(delta);
 	}
 }
 
