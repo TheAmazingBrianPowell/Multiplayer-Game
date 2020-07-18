@@ -194,7 +194,6 @@ function gameLoop(delta) {
 		if(mouseIsPressed || touch) {
 			socket.emit("fired", [touchX, touchY]);
 		}
-		console.log(delta);
 	}
 }
 

@@ -127,6 +127,7 @@ io.on('connection', socket => {
 		}
 	});
 });
+var prevT = new Date();
 
 setInterval(() => {
 	for(var i in gameState.players) {
@@ -137,6 +138,8 @@ setInterval(() => {
 		gameState.bullets[i].y += gameState.bullets[i].vY;
 	}
 	io.sockets.emit('state', gameState);
+	console.log(prevT - new Date());
+	prevT = new Date();
 }, 30);
 
 const getDirection = (data) => {
