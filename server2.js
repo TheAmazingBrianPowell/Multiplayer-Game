@@ -137,7 +137,7 @@ setInterval(() => {
 		gameState.bullets[i].y += gameState.bullets[i].vY;
 	}
 	io.sockets.emit('state', gameState);
-}, 100);
+}, 30);
 
 const getDirection = (data) => {
 	var length = Math.sqrt(data[0]*data[0]+data[1]*data[1]);
