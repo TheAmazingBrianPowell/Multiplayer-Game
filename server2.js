@@ -39,7 +39,7 @@ flags:[],
 red:0,
 blue:0,
 numPlayers:0,
-bullets:{}
+bullets:[]
 }
 
 server.listen(process.env.PORT || 8080);
@@ -61,7 +61,8 @@ io.on('connection', socket => {
 		pY: 0,
 		side:(gameState.red > gameState.blue) ? "blue" : "red",
 		respawnTimer:0,
-		hasFlag:false
+		hasFlag:false,
+		bulletDelay:20
 		}
 		if(gameState.red > gameState.blue) {
 			gameState.blue++;
@@ -108,11 +109,19 @@ io.on('connection', socket => {
 		}
 	});
 	
-	socket.on("fired", () => {
-		
+	socket.on("fired", (data) => {
+		try{
+		var direction = getDirection(data);
+		if(gameState.players[socket.id].bulletDelay < 0) {
+			gameState.bullets.push[{x:data[0], y:data[1], vX: direction[0]*20, vY: direction[1]*20}];
+		}
+		}catch(e){
+			console.log(e);
+		}
 	});
 	
 	socket.on('disconnect', () => {
+		gameState.numPlayers--;
 		if(gameState.numPlayers == 0) {
 			gameState.players = {};
 		}
@@ -120,8 +129,15 @@ io.on('connection', socket => {
 });
 
 setInterval(() => {
+	for(var i in gameState.players) {
+		gameState.players[i].bulletDelay--;
+	}
+	for(var i = 0; i < gameState.bullets.length; i++) {
+		gameState.bullets[i].x += gameState.bullets[i].vX;
+		gameState.bullets[i].y += gameState.bullets[i].vY;
+	}
 	io.sockets.emit('state', gameState);
-}, 50);
+}, 100);
 
 const getDirection = (data) => {
 	var length = Math.sqrt(data[0]*data[0]+data[1]*data[1]);

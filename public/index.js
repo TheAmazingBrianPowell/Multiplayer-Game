@@ -22,25 +22,30 @@ let keysPressed = {};
 let mouseIsPressed = false;
 
 
-document.addEventListener('keydown', (event) => {
-	keysPressed[event.key] = true;
+document.addEventListener('keydown', (e) => {
+	keysPressed[e.key] = true;
 });
 
-document.addEventListener('keyup', (event) => {
-	keysPressed[event.key] = false;
+document.addEventListener('keyup', (e) => {
+	keysPressed[e.key] = false;
 });
 
-document.addEventListener('mouseup', (event) => {
+let touchX = 0;
+let touchY = 0;
+
+document.addEventListener('mouseup', (e) => {
 	mouseIsPressed = true;
+	touchX = e.clientX;
+	touchY = e.clientY;
 });
 
-document.addEventListener('mousedown', (event) => {
+document.addEventListener('mousedown', (e) => {
 	mouseIsPressed = false;
+	touchX = e.clientX;
+	touchY = e.clientY;
 });
 
-var touch = false;
-var touchX = 0;
-var touchY = 0;
+let touch = false;
 
 document.body.addEventListener('touchstart', function(e) {
 	touch = true;
@@ -108,9 +113,11 @@ let flagContainer = new PIXI.Container();
 flagContainer.zIndex = 0;
 let playerContainer = new PIXI.Container();
 playerContainer.zIndex = 1;
+let bullets = [];
 
 socket.on("state", (data) => {
 	if(id) {
+		console.log(true);
 		for(var i in data.players) {
 			if(!players[i]) {
 				players[i] = new PIXI.Graphics();
@@ -127,6 +134,9 @@ socket.on("state", (data) => {
 			players[i].height = data.players[i].radius*2;
 			players[i].side = data.players[i].side;
 			players[i].hasFlag = data.players[i].hasFlag;
+		}
+		for(var i = 0; i < data.bullets.length; i++) {
+			bullets.push(data.bullets[i]);
 		}
 		if(!flags[0]) {
 			flags[0] = new PIXI.Graphics();
@@ -182,8 +192,8 @@ function gameLoop() {
 			}
 		}
 		app.stage.setTransform(-players[id].x + innerWidth * 0.5, -players[id].y + innerHeight * 0.5);
-		if(mouseIsPressed) {
-			socket.emit("fired");
+		if(mouseIsPressed || touch) {
+			socket.emit("fired", [touchX, touchY]);
 		}
 	}
 }
