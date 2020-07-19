@@ -15,7 +15,8 @@ app.post('/', (req, res) => {
 
 var gameOver = false;
 const speed = 10;
-const elements = [0,1,10,1009,
+const elements = [
+				  0,1,10,1009,
 				  1,0,2009,10,
 				  0,1000,2009,10,
 				  2000,0,10,1009,
